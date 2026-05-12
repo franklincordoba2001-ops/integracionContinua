@@ -43,11 +43,7 @@ jobs:
       - name: Checkout del Repositorio
         uses: actions/checkout@v4
 
-      - name: Configurar GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
+     
       - name: Subir Artifactos de Despliegue
         uses: actions/upload-pages-artifact@v3
         with:
