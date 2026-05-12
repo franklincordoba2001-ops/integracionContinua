@@ -1,57 +1,57 @@
 name: CI - Deploy
 
 on:
-	push:
-		branches:
-			- main
-	workflow_dispatch:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
-	contents: read
-	pages: write
-	id-token: write
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-	verificar_codigo:
-		name: Verificar código
-		runs-on: ubuntu-latest
-		outputs:
-			ok: ${{ steps.check.outputs.ok }}
-		steps:
-			- name: Checkout del repositorio
-				uses: actions/checkout@v4
+  verificar_codigo:
+    name: Verificar código
+    runs-on: ubuntu-latest
+    outputs:
+      ok: ${{ steps.check.outputs.ok }}
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
 
-			- name: Verificar que index.html existe
-				id: check
-				run: |
-					if [ -f index.html ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "ok=false" >> "$GITHUB_OUTPUT"; echo "index.html no encontrado"; exit 1; fi
+      - name: Verificar que index.html existe
+        id: check
+        run: |
+          if [ -f index.html ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "ok=false" >> "$GITHUB_OUTPUT"; echo "index.html no encontrado"; exit 1; fi
 
-	desplegar_pagina:
-		needs: verificar_codigo
-		if: github.ref == 'refs/heads/main'
-		runs-on: ubuntu-latest
-		environment:
-			name: github-pages
-			url: ${{ steps.deployment.outputs.page_url }}
+  desplegar_pagina:
+    needs: verificar_codigo
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-		permissions:
-			contents: read
-			pages: write
-			id-token: write
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
 
-		steps:
-			- name: Checkout del Repositorio
-				uses: actions/checkout@v4
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
 
-			- name: Configurar GitHub Pages
-				uses: actions/configure-pages@v5
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
 
-			- name: Subir Artifactos de Despliegue
-				uses: actions/upload-pages-artifact@v3
-				with:
-					path: './'
+      - name: Subir Artifactos de Despliegue
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './'
 
-			- name: Iniciar Despliegue a Pages
-				id: deployment
-				uses: actions/deploy-pages@v4
+      - name: Iniciar Despliegue a Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
